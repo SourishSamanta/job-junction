@@ -1,5 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Nav from '../../components/Nav';
+import Hero from '../../components/Hero';
+import SolutionSection from '../../components/SolutionSection';
+import CircularSection from '../../components/CircularSection';
 
 const LandingPage = () => {
   
@@ -7,11 +11,16 @@ const LandingPage = () => {
   
   return (
     <>
-    <div>LandingPage</div>
-    <button onClick={(e)=>{
+    <div className=' w-screen overflow-x-hidden'>
+        <Nav />
+        <Hero />
+        <SolutionSection />
+        <CircularSection />
+    </div>
+    {/* <button onClick={(e)=>{
       e.preventDefault();
       navigate('/profile')
-    }}>Get started</button>
+    }}>Get started</button> */}
     </>
   )
 }
