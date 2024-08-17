@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+*{
+    
+
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
