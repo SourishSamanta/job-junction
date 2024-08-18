@@ -44,7 +44,7 @@ const SolutionSection = () => {
         },
     ];
     return (
-        <div className=" w-full h-[80vh] flex flex-col items-center">
+        <div className=" w-full min-h-[80vh] flex flex-col items-center">
             <h1 className=" text-[2.8vw] font-bold">One Platform</h1>
             <h1 className=" text-[2.8vw] font-bold">
                 Many <span className=" text-blue-700">Solution</span>
@@ -52,13 +52,13 @@ const SolutionSection = () => {
             <div className=" w-[80%] flex justify-center flex-wrap gap-8 gap-y-12 mt-20">
                 {solutions.map((e) => {
                     return (
-                        <div className="hover:bg-blue-700 hover:text-white transition-all duration-300  rounded-xl border flex border-black/20 p-5 py-8 w-[20%] min-w-60">
+                        <div className="hover:bg-blue-700 hover:text-white transition-all cursor-pointer duration-300  rounded-xl border flex border-black/20 p-5 py-8 w-[20%] min-w-60">
                             <div>{e.icon}</div>
                             <div className=" flex flex-col">
                                 <h1 className=" text-xl font-bold mb-1">
                                     {e.title}
                                 </h1>
-                                <p>99 opportunities</p>
+                                <p>99+ opportunities</p>
                             </div>
                         </div>
                     );

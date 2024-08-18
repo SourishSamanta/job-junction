@@ -4,6 +4,8 @@ import Nav from '../../components/Nav';
 import Hero from '../../components/Hero';
 import SolutionSection from '../../components/SolutionSection';
 import CircularSection from '../../components/CircularSection';
+import CvSection from '../../components/CvSection';
+import SubscribeSection from '../../components/SubscribeSection';
 
 const LandingPage = () => {
   
@@ -16,6 +18,8 @@ const LandingPage = () => {
         <Hero />
         <SolutionSection />
         <CircularSection />
+        <CvSection />
+        <SubscribeSection />
     </div>
     {/* <button onClick={(e)=>{
       e.preventDefault();
