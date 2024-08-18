@@ -5,6 +5,7 @@ const ConnnectToDB = require('./Config/db_config');
 const userRouter = require('./routes/userRouter')
 const jobRouter = require('./routes/jobRouter');
 const uploadMiddleWare = require('./middlewares/uploadMiddleware');
+const UserModel = require('./models/UserModel')
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -36,6 +37,28 @@ app.post('/upload-test', uploadMiddleWare, (req,res) => {
             message: 'No file uploaded',
         });
     }
+})
+
+app.get('/check-user/:clerkID', async(req,res) => {
+    console.log("mushi mushi")
+  const User = await UserModel.findOne({
+    clerkID : req.params.clerkID
+  });
+
+  if(User){
+    res.json({
+      success : true,
+      userID : User._id
+    })
+  }
+
+  else
+  {
+    res.json({
+      success : false,
+      message : "User not found"
+    })
+  }
 })
 
 app.listen(PORT,async () => {

@@ -3,8 +3,12 @@ import Card from "@mui/material/Card";
 import { CardActionArea } from "@mui/material";
 import employee from "../../assets/employee.gif";
 import recruiter from "../../assets/recruiter.gif";
+import { useNavigate } from "react-router-dom";
 
 const ChooseRole = () => {
+
+    const navigate = useNavigate();
+
     return (
         <div className=" w-screen h-screen flex items-center justify-center">
             <div className=" max-w-[900px] w-[85%] h-[70%] flex flex-col bg-slate-100 items-center p-5 rounded-xl shadow-2xl shadow-black/50 border border-black/20">
@@ -17,7 +21,9 @@ const ChooseRole = () => {
                         variant="outlined"
                         sx={{ maxWidth: 345, maxHeight: 345 }}
                     >
-                        <CardActionArea>
+                        <CardActionArea onClick={() => {
+                            navigate('/setup/candidateForm')
+                        }}>
                             <div className=" h-60 w-60">
                                 <img src={employee} alt="" />
                             </div>
@@ -34,7 +40,9 @@ const ChooseRole = () => {
                         variant="outlined"
                         sx={{ maxWidth: 345, maxHeight: 345 }}
                     >
-                        <CardActionArea>
+                        <CardActionArea onClick={() => {
+                            navigate('/setup/recruiterForm')
+                        }}>
                             <div className=" h-60 w-60 flex items-center justify-center">
                                 <img src={recruiter} alt="" />
                             </div>

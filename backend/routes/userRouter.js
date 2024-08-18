@@ -28,6 +28,9 @@ router.get('/', userController.getAllUsers);
 // Get a user by ID with validation
 router.get('/:id', validateUserId, userController.getUserById);
 
+
+
+
 // Update a user by ID with validation
 router.put('/:id', [...validateUserId, ...validateCreateUser], userController.updateUserById);
 
