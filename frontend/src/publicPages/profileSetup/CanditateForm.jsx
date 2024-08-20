@@ -22,14 +22,35 @@ const CandidateForm = () => {
   const [languageInput, setLanguageInput] = useState('');
   const [resume, setResume] = useState(null);
   const [preferredType, setPreferredType] = useState('Full-Time');
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [currentjob, setCurrentJob] = useState();
+  const [portfolio, setPortfolio] = useState();
+  const [highestdegree, setHighestDegree] = useState();
+  const [fieldStudy, setFieldStudy] = useState();
+  const [university, setUniversity] = useState();
+  const [desiredSalary, setDesiredSalary] = useState();
+  const [aboutYou, setAboutYou] = useState();
+  const [graduationYear, setGraduationYear] = useState();
+    
 
   const handleCreateProfile = async() => {
+    
     console.log(interests, skills,
        certificates, hobbies, languages, interestInput,
        skillInput,
        hobbyInput,languageInput,
        resume,
-       preferredType
+       preferredType,
+      username, 
+      email,
+      currentjob,
+      portfolio,
+      highestdegree, fieldStudy,
+      university,
+      desiredSalary,
+      aboutYou,
+      graduationYear
     )
   }
 
@@ -86,24 +107,44 @@ const CandidateForm = () => {
 
   const handleResumeUpload = (e) => {
     const file = e.target.files[0];
-    setResume(file ? file.name : null);
+    setResume(file ? file : null);
   };
 
   return (
     <div className='w-screen h-screen flex items-center justify-center'>
       <div className='w-[90%] max-w-[1250px] h-[90%] shadow-xl border border-black/20 rounded-xl p-7 overflow-auto'>
         <h1 className='my-4 text-xl font-bold'>Personal Details:</h1>
-        <TextField label="Username" variant="standard" defaultValue="testuser" fullWidth margin="normal" />
-        <TextField label="Email" variant="standard" defaultValue="testuser@test.com" fullWidth margin="normal" />
-        <TextField label="Current Job Title" variant="standard" defaultValue="Software Engineer" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setUsername(e.target.value);
+        }} label="Username" variant="standard" placeholder='Username' fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setEmail(e.target.value)
+        }} label="Email" variant="standard" placeholder='Email ID' fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setCurrentJob(e.target.value);
+        }} label="Current Job Title" variant="standard" placeholder='Current Job' fullWidth margin="normal" />
         
-        <TextField label="Portfolio" variant="standard" defaultValue="https://example.com/portfolio" fullWidth margin="normal" />
-        <TextField label="Highest Degree Earned" variant="standard" defaultValue="Bachelor's" fullWidth margin="normal" />
-        <TextField label="Field of Study" variant="standard" defaultValue="Computer Science" fullWidth margin="normal" />
-        <TextField label="University" variant="standard" defaultValue="ABC University" fullWidth margin="normal" />
-        <TextField label="Graduation Year" variant="standard" defaultValue="2027" fullWidth margin="normal" />
-        <TextField label="Desired Salary" variant="standard" defaultValue="100000" fullWidth margin="normal" />
-        <TextField label="About You" variant="standard" defaultValue="I am a passionate software developer with a keen interest in new technologies." fullWidth multiline margin="normal" />
+        <TextField onChange={(e) => {
+          setPortfolio(e.target.value)
+        }} label="Portfolio" variant="standard" placeholder="https://example.com/portfolio" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setHighestDegree(e.target.value)
+        }} label="Highest Degree Earned" variant="standard" placeholder="Bachelor's" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setFieldStudy(e.target.value)
+        }} label="Field of Study" variant="standard" placeholder="Computer Science" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setUniversity(e.target.value)
+        }} label="University" variant="standard" placeholder="ABC University" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setGraduationYear(e.target.value)
+        }} label="Graduation Year" variant="standard" placeholder="2027" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setDesiredSalary(e.target.value)
+        }} label="Desired Salary" variant="standard" placeholder="100000" fullWidth margin="normal" />
+        <TextField onChange={(e) => {
+          setAboutYou(e.target.value)
+        }} label="About You" variant="standard" placeholder="I am a passionate software developer with a keen interest in new technologies." fullWidth multiline margin="normal" />
 
         {/* Interests Section */}
         <h1 className='my-4 text-xl font-bold'>Interests:</h1>
