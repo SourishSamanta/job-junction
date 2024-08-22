@@ -2,7 +2,6 @@ const express = require('express');
 const { body, param } = require('express-validator');
 const router = express.Router();
 const userController = require('../controllers/userController');
-const uploadMiddleware = require('../middleware/uploadMiddleware');
 
 // Validation rules
 const validateCreateUser = [
@@ -21,13 +20,13 @@ const validateUserId = [
 ];
 
 // Create a new user with validation
-router.post('/', uploadMiddleware, userController.createUser);
+router.post('/', userController.createUser);
 
 // Get all users
 router.get('/', userController.getAllUsers);
 
 // Get a user by ID with validation
-router.get('/:id', validateUserId, userController.getUserById);
+router.get('/:id', userController.getUserById);
 
 
 

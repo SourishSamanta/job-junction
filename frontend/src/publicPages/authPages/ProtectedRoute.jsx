@@ -19,10 +19,13 @@ const ProtectedRoute = ({ children }) => {
           console.log(response)
           if (response.data.success === true) {
             // User's data is saved, allow access to protected content
-            const UserResponse = await axios.post(`${import.meta.env.VITE_API_URL}/user`,{
-              username : user.fullName
-            })
-            localStorage.setItem('user_id', response.data.userID)
+            
+            const userID = localStorage.getItem('user_id');
+
+            if(!userID){
+              localStorage.setItem('user_id', response.data.userID)
+              navigate('/setup/chooseRole');
+            }
           } else {
             // Redirect to /setup/chooseRole if setup is not complete
             navigate('/setup/chooseRole');

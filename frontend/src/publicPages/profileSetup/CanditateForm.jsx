@@ -4,6 +4,9 @@ import Chip from '@mui/material/Chip';
 import Button from '@mui/material/Button';
 import { MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import axios from 'axios';
+import { useEffect } from 'react';
+import {useUser} from "@clerk/clerk-react"
 
 const Input = styled('input')({
   display: 'none',
@@ -11,9 +14,11 @@ const Input = styled('input')({
 
 const CandidateForm = () => {
 
+  const {user} = useUser();
+
   const [interests, setInterests] = useState(["Software Development", "Machine Learning"]);
   const [skills, setSkills] = useState(["JavaScript", "React", "Node.js"]);
-  const [certificates, setCertificates] = useState(["Certified JavaScript Developer"]);
+  const [certificates, setCertificates] = useState([]);
   const [hobbies, setHobbies] = useState(["Reading", "Hiking", "Sleeping"]);
   const [languages, setLanguages] = useState(["English", "Spanish"]);
   const [interestInput, setInterestInput] = useState('');
@@ -36,22 +41,49 @@ const CandidateForm = () => {
 
   const handleCreateProfile = async() => {
     
-    console.log(interests, skills,
-       certificates, hobbies, languages, interestInput,
-       skillInput,
-       hobbyInput,languageInput,
-       resume,
-       preferredType,
-      username, 
-      email,
-      currentjob,
-      portfolio,
-      highestdegree, fieldStudy,
-      university,
-      desiredSalary,
-      aboutYou,
-      graduationYear
-    )
+    
+
+    var resumeURL ;
+    var certificateURL ;
+
+    if(resume){
+      //upload the resume
+      const formData = new FormData();
+      formData.append('file', resume);
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      };
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-single`, formData);
+      if(response.data.success === true) {
+        resumeURL = response.data.url;
+      }
+    }
+
+    //saving user details
+    const payload = {
+      currentJobTitle : currentjob,
+      interests : interests,
+      skills : skills,
+      portfolio : portfolio,
+      hobbies : hobbies,
+      languages : languages,
+      resume : resumeURL,
+      highestDegreeEarned : highestdegree,
+      fieldOfStudy : fieldStudy,
+      university : university,
+      graduationYear : graduationYear,
+      desiredSalary : desiredSalary,
+      aboutYou : aboutYou,
+      interests : interests,
+      skills : skills,
+      certificates : certificates,
+      hobbies : hobbies,
+      preferredType : preferredType,
+      language : languages
+    }
+
+    console.log(payload)
+
   }
 
   // Handlers for adding and deleting fields
@@ -61,6 +93,16 @@ const CandidateForm = () => {
       setInterestInput('');
     }
   };
+
+  const fetchPreviousData = async() => {
+    const userID = localStorage.getItem('user_id');
+    const userData = await axios.get(`${import.meta.env}/user/${userID}`);
+    console.log(userID);
+  }
+
+  useEffect(() => {
+    fetchPreviousData();
+  },[])
 
   const handleDeleteInterest = (interestToDelete) => {
     setInterests(interests.filter(interest => interest !== interestToDelete));
@@ -101,7 +143,7 @@ const CandidateForm = () => {
 
   const handleCertificateUpload = (e) => {
     const files = Array.from(e.target.files);
-    setCertificates([...certificates, ...files.map(file => file.name)]);
+    setCertificates([...certificates, ...files.map(file => file)]);
   };
 
 
@@ -194,7 +236,7 @@ const CandidateForm = () => {
           {certificates.map((certificate, index) => (
             <Chip
               key={index}
-              label={certificate}
+              label={certificate.name}
               variant="outlined"
             />
           ))}
@@ -246,7 +288,7 @@ const CandidateForm = () => {
           Upload Resume
         </Button>
       </label>
-      {resume && <p className="mt-2">Uploaded: {resume}</p>}
+      {resume && <p className="mt-2">Uploaded: {resume.name}</p>}
 
         {/* Preferred Type Section */}
         <h1 className='my-4 text-xl font-bold'>Preferred Type:</h1>

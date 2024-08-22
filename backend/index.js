@@ -5,7 +5,8 @@ const ConnnectToDB = require('./Config/db_config');
 const userRouter = require('./routes/userRouter')
 const jobRouter = require('./routes/jobRouter');
 const uploadMiddleWare = require('./middlewares/uploadMiddleware');
-const UserModel = require('./models/UserModel')
+const UserModel = require('./models/UserModel');
+const UploadRoute = require('./utils/UploadRoute')
 
 const app = express();
 const PORT = process.env.PORT || 5500;
@@ -38,6 +39,8 @@ app.post('/upload-test', uploadMiddleWare, (req,res) => {
         });
     }
 })
+
+app.use('/api',UploadRoute);
 
 app.get('/check-user/:clerkID', async(req,res) => {
     console.log("mushi mushi")
