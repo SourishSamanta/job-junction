@@ -1,5 +1,6 @@
 ## Job Junction - A Job Search and Management Platform
 
+Hellow, i have just made few changes :)
 This repository contains the code for **Job Junction**, a web application that allows users to search for jobs, manage applications, and connect with employers. It consists of a frontend and a backend built using the following technologies:
 
 **Frontend:**
