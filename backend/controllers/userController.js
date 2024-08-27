@@ -3,30 +3,23 @@ const UserModel = require('../models/UserModel');
 
 // Create a new user (Candidate or Recruiter)
 exports.createUser = async (req, res) => {
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation failed',
-      errors: errors.array()
-    });
+  try{
+    const CurrentUser = new UserModel(req.body)
+    await CurrentUser.save();
+
+    res.json({
+      success : true,
+      message : "User created :)",
+      data : CurrentUser
+    })
   }
 
-  try {
-    const newUser = new UserModel(req.body);
-    const savedUser = await newUser.save();
-    res.status(201).json({
-      success: true,
-      message: 'User created successfully',
-      data: savedUser
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-      data: null
-    });
+  catch(error){
+    console.log(error);
+    res.json({
+      success : false,
+      message : "Error occured :("
+    })
   }
 };
 
@@ -61,7 +54,7 @@ exports.getUserById = async (req, res) => {
   }
 
   try {
-    const user = await UserModel.findById(req.params.id);
+    const user = await UserModel.findOne({clerkID : req.params.id});
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -75,6 +68,7 @@ exports.getUserById = async (req, res) => {
       data: user
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: error.message,
@@ -86,17 +80,19 @@ exports.getUserById = async (req, res) => {
 // Update a user by ID
 exports.updateUserById = async (req, res) => {
   // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation failed',
-      errors: errors.array()
-    });
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: 'Validation failed',
+  //     errors: errors.array()
+  //   });
+  // }
 
   try {
-    const updatedUser = await UserModel.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const updatedUser = await UserModel.findOneAndUpdate({
+      clerkID : req.params.id
+    },req.body,{ new: true});
     if (!updatedUser) {
       return res.status(404).json({
         success: false,

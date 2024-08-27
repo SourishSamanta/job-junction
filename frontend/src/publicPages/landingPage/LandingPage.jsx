@@ -14,7 +14,7 @@ const LandingPage = () => {
   return (
     <>
     <div className=' w-screen overflow-x-hidden'>
-        <Nav />
+       
         <Hero />
         <SolutionSection />
         <CircularSection />

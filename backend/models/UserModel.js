@@ -23,8 +23,8 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
-    enum: ['candidate', 'recruiter'],
-    required: true
+    enum: ['candidate', 'recruiter', 'pending'],
+    default : 'pending'
   },
   createdAt: {
     type: Date,
@@ -124,9 +124,7 @@ const userSchema = new Schema({
   },
   phoneNumber: {
     type: String,
-    required: function() {
-      return this.role === 'recruiter';
-    }
+    
   },
   companyName: {
     type: String,

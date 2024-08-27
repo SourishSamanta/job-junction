@@ -42,6 +42,7 @@ app.post('/upload-test', uploadMiddleWare, (req,res) => {
 
 app.use('/api',UploadRoute);
 
+
 app.get('/check-user/:clerkID', async(req,res) => {
     console.log("mushi mushi")
   const User = await UserModel.findOne({

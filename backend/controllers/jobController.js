@@ -4,14 +4,14 @@ const JobModel = require('../models/JobModel');
 // Create a new job
 exports.createJob = async (req, res) => {
   // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({
-      success: false,
-      message: 'Validation failed',
-      errors: errors.array()
-    });
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({
+  //     success: false,
+  //     message: 'Validation failed',
+  //     errors: errors.array()
+  //   });
+  // }
 
   try {
     const newJob = new JobModel(req.body);
@@ -22,6 +22,7 @@ exports.createJob = async (req, res) => {
       data: savedJob
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       success: false,
       message: error.message,

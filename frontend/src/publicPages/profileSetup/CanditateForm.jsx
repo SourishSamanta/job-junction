@@ -27,8 +27,8 @@ const CandidateForm = () => {
   const [languageInput, setLanguageInput] = useState('');
   const [resume, setResume] = useState(null);
   const [preferredType, setPreferredType] = useState('Full-Time');
-  const [username, setUsername] = useState();
-  const [email, setEmail] = useState();
+  const [username, setUsername] = useState(user.fullName);
+  const [email, setEmail] = useState(user.primaryEmailAddress.emailAddress);
   const [currentjob, setCurrentJob] = useState();
   const [portfolio, setPortfolio] = useState();
   const [highestdegree, setHighestDegree] = useState();
@@ -53,14 +53,33 @@ const CandidateForm = () => {
       const config = {
         headers: { 'Content-Type': 'multipart/form-data' }
       };
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-single`, formData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-single`,formData, config);
       if(response.data.success === true) {
         resumeURL = response.data.url;
       }
     }
 
+    if(certificates){
+      //upload the resume
+      const formData = new FormData();
+      for(const file of certificates){
+        formData.append('files', file);
+      }
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      };
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/api/upload-multiple` ,formData, config);
+      console.log(response)
+      if(response.data.success === true) {
+        certificateURL = response.data.files;
+      }
+    }
+
     //saving user details
     const payload = {
+      clerkID : user.id,
+      username : username,
+      email : email,
       currentJobTitle : currentjob,
       interests : interests,
       skills : skills,
@@ -76,13 +95,22 @@ const CandidateForm = () => {
       aboutYou : aboutYou,
       interests : interests,
       skills : skills,
-      certificates : certificates,
+      certificates : certificateURL,
       hobbies : hobbies,
       preferredType : preferredType,
-      language : languages
+      language : languages,
+      role : "candidate",
+      profilePicture : user.imageUrl
     }
 
-    console.log(payload)
+    //console.log(payload)
+
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/user/`, payload);
+    if(response.data.success === true)
+      alert(response.data.message)
+
+    else
+      alert(response.data.message)
 
   }
 
@@ -158,10 +186,10 @@ const CandidateForm = () => {
         <h1 className='my-4 text-xl font-bold'>Personal Details:</h1>
         <TextField onChange={(e) => {
           setUsername(e.target.value);
-        }} label="Username" variant="standard" placeholder='Username' fullWidth margin="normal" />
+        }} label="Username" variant="standard" placeholder='Username' value={username} disabled fullWidth margin="normal" />
         <TextField onChange={(e) => {
           setEmail(e.target.value)
-        }} label="Email" variant="standard" placeholder='Email ID' fullWidth margin="normal" />
+        }} label="Email" variant="standard" placeholder='Email ID' value={email} disabled  fullWidth margin="normal" />
         <TextField onChange={(e) => {
           setCurrentJob(e.target.value);
         }} label="Current Job Title" variant="standard" placeholder='Current Job' fullWidth margin="normal" />

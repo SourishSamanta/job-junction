@@ -49,7 +49,7 @@ const jobSchema = new Schema({
     required: true
   },
   responsibilities: {
-    type: [String],
+    type: String,
     required: true
   },
   qualifications: {
@@ -79,7 +79,6 @@ const jobSchema = new Schema({
   },
   contactEmail: {
     type: String,
-    required: true
   },
   applicationLink: {
     type: String
