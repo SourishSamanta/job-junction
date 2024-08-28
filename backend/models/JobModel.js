@@ -29,7 +29,7 @@ const jobSchema = new Schema({
     required: true
   },
   jobCategory: {
-    type: String,
+    type: [String],
     required: true
   },
   salaryRange: {

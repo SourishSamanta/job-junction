@@ -9,12 +9,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs from 'dayjs';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useUserData } from '../../contexts/userContext';
 
 function CreateJobForm() {
+  const {userData, setUserData} = useUserData();
   const navigate = useNavigate();
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [jobTitle, setJobTitle] = useState('');
-  const [companyName, setCompanyName] = useState('');
+  const [companyName, setCompanyName] = useState(userData.companyName);
   const [companyLocation, setCompanyLocation] = useState('');
   const [employmentType, setEmploymentType] = useState('');
   const [jobCategories, setJobCategories] = useState([]);
@@ -53,14 +55,14 @@ function CreateJobForm() {
       companyName: companyName,
       location: companyLocation,
       employmentType: employmentType,
-      jobCategory: JSON.stringify(jobCategories),
+      jobCategory: (jobCategories),
       salaryRange: `${minSalary}$ - ${maxSalary}$`,
       experienceLevel: experience,
-      requiredSkills: JSON.stringify(requiredSkills),
+      requiredSkills: (requiredSkills),
       jobDescription: jobDescription,
       responsibilities: jobResponsibilities,
-      qualifications: JSON.stringify(qualifications),
-      preferredQualifications: JSON.stringify(preferredQualifications),
+      qualifications: (qualifications),
+      preferredQualifications: (preferredQualifications),
       applicationDeadline: applicationValidDate.toISOString(),
     };
     if (companyLogo) {
@@ -116,6 +118,8 @@ function CreateJobForm() {
               label='Company name'
               placeholder='Google'
               fullWidth
+              value={companyName}
+              disabled
             />
 
             <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px' }}>
