@@ -4,20 +4,8 @@ import {
   Box, Typography
 } from '@mui/material';
 
-function FilterComponent({ onFilter }) {
-  const [filters, setFilters] = useState({
-    jobTitle: '',
-    location: '',
-    employmentType: '',
-    experienceLevel: '',
-    jobCategory: '',
-    companyName: '',
-    jobStatus: '',
-    skills: '',
-    preferredQualifications: '',
-    salaryRange: '',
-    datePosted: '',
-  });
+function FilterComponent({ filters, setFilters, handleFilter }) {
+  
 
   const handleChange = (e) => {
     setFilters({
@@ -26,9 +14,7 @@ function FilterComponent({ onFilter }) {
     });
   };
 
-  const handleFilter = () => {
-    onFilter(filters);
-  };
+  
 
   const resetFilters = () => {
     setFilters({

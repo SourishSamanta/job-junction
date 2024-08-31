@@ -11,6 +11,7 @@ function JobDetails({ jobId }) {
                 const response = await axios.get(`${import.meta.env.VITE_API_URL}/job/${jobId}`);
                 if (response.data.success) {
                     setJob(response.data.data);
+                    console.log(response.data.data)
                 } else {
                     alert(response.data.message);
                 }
@@ -70,12 +71,45 @@ function JobDetails({ jobId }) {
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
                             {job.qualifications.map((qual, index) => (
                                 <>
-                                {console.log(typeof qual)}
                                 <Chip key={index} label={qual} />
                                 </>
                             ))}
                         </Box>
                     </Typography>
+
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        <strong>Employment Type :</strong>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {job.employmentType.map((qual, index) => (
+                                <>
+                                <Chip key={index} label={qual} />
+                                </>
+                            ))}
+                        </Box>
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        <strong>Experience Level :</strong>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {job.experienceLevel.map((qual, index) => (
+                                <>
+                                <Chip key={index} label={qual} />
+                                </>
+                            ))}
+                        </Box>
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        <strong>Job Category :</strong>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                            {job.jobCategory.map((qual, index) => (
+                                <>
+                                <Chip key={index} label={qual} />
+                                </>
+                            ))}
+                        </Box>
+                    </Typography>
+
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         <strong>Preferred Qualifications:</strong>
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
@@ -90,7 +124,9 @@ function JobDetails({ jobId }) {
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                         <strong>Application Deadline:</strong> {new Date(job.applicationDeadline).toLocaleDateString()}
                     </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                    {
+                        job.jobStatus === 'Open' ? (<>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
                         <Button variant="contained" color="primary" onClick={handleApply}>
                             Apply
                         </Button>
@@ -98,6 +134,12 @@ function JobDetails({ jobId }) {
                             Save
                         </Button>
                     </Box>
+                        </>) : (<>
+                            <Typography variant='h6'>
+                                Sorry this job is not accepting application any more :(
+                            </Typography>
+                        </>)
+                    }
                 </CardContent>
             </Card>
         </Box>
