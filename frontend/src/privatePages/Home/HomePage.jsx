@@ -14,6 +14,21 @@ function HomePage() {
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [currentJob, setCurrentJob] = useState();
+    const [filters, setFilters] = useState({
+        jobTitle: '',
+        location: '',
+        employmentType: '',
+        experienceLevel: '',
+        jobCategory: '',
+        companyName: '',
+        jobStatus: '',
+        skills: '',
+        preferredQualifications: '',
+        salaryRange: '',
+        datePosted: '',
+      });
+    const [searchQuery, setsearchQuery] = useState('');
+
 
     async function fetchEmployees() {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}/user`);
@@ -45,35 +60,86 @@ function HomePage() {
         }
     }, [userData]);
 
-    const handleFilter = (filters) => {
+    
+
+    const handleFilter = () => {
         console.log(filters)
         const filtered = jobs.filter(job => {
-            return Object.keys(filters).every(key => {
-                if (!filters[key]) return true;
-                if (key === 'salaryRange') {
-                    // Assuming salaryRange is in format "20k - 40k"
-                    const [min, max] = filters.salaryRange.split(' - ').map(s => parseInt(s.replace('k', '')) * 1000);
-                    const jobSalary = parseInt(job.salary.replace('k', '')) * 1000; // Assuming job.salary is in format "40k"
-                    return jobSalary >= min && jobSalary <= max;
-                } else if (key === 'datePosted') {
-                    // Assuming datePosted is in format "Last 7 days"
-                    const days = parseInt(filters.datePosted.split(' ')[1]);
-                    const dateThreshold = new Date();
-                    dateThreshold.setDate(dateThreshold.getDate() - days);
-                    return new Date(job.datePosted) >= dateThreshold;
-                }
-                return job[key].toLowerCase().includes(filters[key].toLowerCase());
-            });
-        });
+            // Check jobTitle
+            if (filters.jobTitle && !job.jobTitle.toLowerCase().includes(filters.jobTitle.toLowerCase())) {
+              return false;
+            }
+            // Check location
+            if (filters.location && !job.location.toLowerCase().includes(filters.location.toLowerCase())) {
+              return false;
+            }
+            // Check employmentType
+            if (filters.employmentType && job.employmentType !== filters.employmentType) {
+              return false;
+            }
+            // Check experienceLevel
+            if (filters.experienceLevel && job.experienceLevel.toLowerCase() !== filters.experienceLevel.toLowerCase()) {
+              return false;
+            }
+            // Check jobCategory
+            if (filters.jobCategory && job.jobCategory !== filters.jobCategory) {
+              return false;
+            }
+            // Check companyName
+            if (filters.companyName && !job.companyName.toLowerCase().includes(filters.companyName.toLowerCase())) {
+              return false;
+            }
+            // Check jobStatus
+            if (filters.jobStatus && job.jobStatus !== filters.jobStatus) {
+              return false;
+            }
+            // Check skills (assuming skills is an array in job and a comma-separated string in filters)
+            if (filters.skills) {
+              const filterSkills = filters.skills.toLowerCase().split(',').map(skill => skill.trim());
+              const jobSkills = job.skills.map(skill => skill.toLowerCase());
+              if (!filterSkills.every(skill => jobSkills.includes(skill))) {
+                return false;
+              }
+            }
+            // Check preferredQualifications
+            if (filters.preferredQualifications && !job.preferredQualifications.toLowerCase().includes(filters.preferredQualifications.toLowerCase())) {
+              return false;
+            }
+            // Check salaryRange (assuming salaryRange is a string like '50000-100000')
+            if (filters.salaryRange) {
+              const [minSalary, maxSalary] = filters.salaryRange.split('-').map(Number);
+              if (job.salary < minSalary || job.salary > maxSalary) {
+                return false;
+              }
+            }
+            // Check datePosted (assuming datePosted is a date string)
+            console.log(new Date(job.postedAt))
+            if (filters.datePosted && new Date(job.postedAt) < new Date(filters.datePosted)) {
+              return false;
+            }
+      
+            return true;
+          });
+          console.log(filtered)
         setFilteredJobs(filtered);
     };
 
+    useEffect(() => {
+        console.log(searchQuery)
+        const searchedJobs = jobs.filter(job => 
+            job.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+
+        if(searchedJobs.length !=0)
+        setFilteredJobs(searchedJobs)
+    },[searchQuery])
+
     return (
         <>
-            <SearchComponent />
+            <SearchComponent searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
             <Grid container spacing={2}>
                 <Grid item md={2}>
-                    <FilterComponent onFilter={handleFilter} />
+                    <FilterComponent filters={filters} setFilters={setFilters} handleFilter={handleFilter} />
                 </Grid>
 
                 <Grid item md={5}>

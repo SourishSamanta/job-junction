@@ -1,18 +1,22 @@
 import React, { useState } from 'react';
-import { TextField, IconButton, InputAdornment, Box, Typography } from '@mui/material';
+import { TextField, IconButton, InputAdornment, Box } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 
-function SearchComponent() {
-    const [searchTerm, setSearchTerm] = useState('');
+function SearchComponent({ searchQuery, setsearchQuery }) {
 
     const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
-        console.log('Search term:', searchTerm);
+        const newValue = event.target.value;
+        setsearchQuery(newValue);
+        
+        if (newValue === '') {
+            // This ensures the searchQuery is set to an empty string if the user clears the input
+            setsearchQuery('');
+        }
     };
 
-    const handleSearch = () => {
-        console.log('Search term:', searchTerm);
-        // Add your search logic here
+    const handleClearSearch = () => {
+        setsearchQuery('');
     };
 
     return (
@@ -31,17 +35,20 @@ function SearchComponent() {
             <TextField
                 fullWidth
                 variant="outlined"
-                placeholder="Search..."
-                value={searchTerm}
+                placeholder="Search For Job title"
+                value={searchQuery}
                 onChange={handleSearchChange}
                 InputProps={{
                     endAdornment: (
                         <InputAdornment position="end">
-                            <IconButton onClick={handleSearch} edge="end">
-                                <SearchIcon />
-                            </IconButton>
+                            {searchQuery && (
+                               <IconButton onClick={handleClearSearch}>
+                               <ClearIcon style={{ color: 'red' }} />
+                           </IconButton>
+                           
+                            )}
                         </InputAdornment>
-                    ),
+                    )
                 }}
             />
         </Box>
