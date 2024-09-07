@@ -51,6 +51,7 @@ router.get('/', userController.getAllUsers);
 // Get a user by ID with validation
 router.get('/:id', userController.getUserById);
 
+router.get('/employee', userController.getUserById);
 
 
 

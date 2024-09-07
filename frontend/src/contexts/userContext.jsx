@@ -8,6 +8,7 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [jobPosts, setJobPosts] = useState();
+  const [currentEmployee, setCurrentEmployee] = useState();
 
   const {user} = useUser();
 
@@ -44,7 +45,7 @@ const fetchUserData = async () => {
   }, [user]);
 
   return (
-    <UserContext.Provider value={{ userData, setUserData , jobPosts, setJobPosts}}>
+    <UserContext.Provider value={{ userData, setUserData , jobPosts, setJobPosts, currentEmployee, setCurrentEmployee}}>
       {children}
     </UserContext.Provider>
   );

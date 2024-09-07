@@ -1,174 +1,212 @@
 import React, { useState } from 'react';
 import {
-  TextField, Button, FormControl, InputLabel, Select, MenuItem,
-  Box, Typography
+  Box,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  Checkbox,
+  ListItemText,
+  Typography,
+  Autocomplete,
+  IconButton
 } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 
-function FilterComponent({ filters, setFilters, handleFilter }) {
-  
-
-  const handleChange = (e) => {
-    setFilters({
-      ...filters,
-      [e.target.name]: e.target.value,
-    });
+const FilterComponent = ({ onFilter }) => {
+  const initialFilters = {
+    employmentType: [],
+    experienceLevel: '',
+    location: '',
+    jobCategory: [],
+    salaryRange: '',
   };
 
-  
+  const [filters, setFilters] = useState(initialFilters);
 
-  const resetFilters = () => {
-    setFilters({
-      jobTitle: '',
-      location: '',
-      employmentType: '',
-      experienceLevel: '',
-      jobCategory: '',
-      companyName: '',
-      jobStatus: '',
-      skills: '',
-      preferredQualifications: '',
-      salaryRange: '',
-      datePosted: '',
-    });
-    onFilter({});
+  const employmentTypes = ['Full-Time', 'Part-Time', 'Contract', 'Internship'];
+  const experienceLevels = ['Junior', 'Mid-Level', 'Senior'];
+  const locations = ['USA', 'India', 'Remote'];
+  const jobCategories = [
+    'Software Development',
+    'Data Analytics',
+    'AI/ML',
+    'Cloud Computing',
+    'IT/Tech',
+  ];
+  const salaryRanges = ['< 20k$', '20k$ - 50k$', '> 50k$'];
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value,
+    }));
+  };
+
+  const handleMultiSelectChange = (name) => (e) => {
+    const {
+      target: { value },
+    } = e;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: typeof value === 'string' ? value.split(',') : value,
+    }));
+  };
+
+  const handleReset = () => {
+    setFilters(initialFilters);
+    onFilter(initialFilters); // Optionally apply the reset filters immediately
+  };
+
+  const handleFilter = () => {
+    onFilter(filters);
+  };
+
+  const clearFilter = (filterName) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterName]: initialFilters[filterName],
+    }));
   };
 
   return (
-    <Box sx={{ padding: 2, backgroundColor: '#f9f9f9', borderRadius: 2 }}>
-      <Typography variant="h6" gutterBottom>
-        Filter Jobs
-      </Typography>
+    <Box sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
+      <Typography variant="h6">Filter Jobs</Typography>
 
-      {/* Location */}
-      <TextField
-        fullWidth
-        label="Location"
-        variant="outlined"
-        name="location"
-        value={filters.location}
-        onChange={handleChange}
-        margin="normal"
-      />
-
-      {/* Employment Type */}
-      <FormControl fullWidth variant="outlined" margin="normal">
+      <FormControl fullWidth>
         <InputLabel>Employment Type</InputLabel>
         <Select
+          multiple
           name="employmentType"
           value={filters.employmentType}
-          onChange={handleChange}
-          label="Employment Type"
+          onChange={handleMultiSelectChange('employmentType')}
+          renderValue={(selected) => selected.join(', ')}
         >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Full-Time">Full-Time</MenuItem>
-          <MenuItem value="Part-Time">Part-Time</MenuItem>
-          <MenuItem value="Remote">Remote</MenuItem>
-          <MenuItem value="Contract">Contract</MenuItem>
+          {employmentTypes.map((type) => (
+            <MenuItem key={type} value={type}>
+              <Checkbox checked={filters.employmentType.indexOf(type) > -1} />
+              <ListItemText primary={type} />
+            </MenuItem>
+          ))}
         </Select>
+        {filters.employmentType.length > 0 && (
+          <IconButton
+            size="small"
+            onClick={() => clearFilter('employmentType')}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
       </FormControl>
 
-      {/* Experience Level */}
-      <FormControl fullWidth variant="outlined" margin="normal">
+      <FormControl fullWidth>
         <InputLabel>Experience Level</InputLabel>
         <Select
           name="experienceLevel"
           value={filters.experienceLevel}
           onChange={handleChange}
-          label="Experience Level"
         >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Entry-Level">Entry-Level</MenuItem>
-          <MenuItem value="Mid-Level">Mid-Level</MenuItem>
-          <MenuItem value="Senior">Senior</MenuItem>
+          {experienceLevels.map((level) => (
+            <MenuItem key={level} value={level}>
+              {level}
+            </MenuItem>
+          ))}
         </Select>
+        {filters.experienceLevel && (
+          <IconButton
+            size="small"
+            onClick={() => clearFilter('experienceLevel')}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
       </FormControl>
 
-      {/* Job Category */}
-      <FormControl fullWidth variant="outlined" margin="normal">
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Autocomplete
+          options={locations}
+          getOptionLabel={(option) => option}
+          value={filters.location}
+          onChange={(event, newValue) => {
+            setFilters((prevFilters) => ({
+              ...prevFilters,
+              location: newValue,
+            }));
+          }}
+          renderInput={(params) => (
+            <TextField {...params} label="Location" fullWidth />
+          )}
+        />
+        {filters.location && (
+          <IconButton
+            size="small"
+            onClick={() => clearFilter('location')}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
+      </Box>
+
+      <FormControl fullWidth>
         <InputLabel>Job Category</InputLabel>
         <Select
+          multiple
           name="jobCategory"
           value={filters.jobCategory}
-          onChange={handleChange}
-          label="Job Category"
+          onChange={handleMultiSelectChange('jobCategory')}
+          renderValue={(selected) => selected.join(', ')}
         >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Software development">Software development</MenuItem>
-          <MenuItem value="Data Analytics">Data Analytics</MenuItem>
-          <MenuItem value="AI/ML">AI/ML</MenuItem>
-          <MenuItem value="Cloud Computing">Cloud Computing</MenuItem>
-          <MenuItem value="IT/Tech">IT/Tech</MenuItem>
+          {jobCategories.map((category) => (
+            <MenuItem key={category} value={category}>
+              <Checkbox checked={filters.jobCategory.indexOf(category) > -1} />
+              <ListItemText primary={category} />
+            </MenuItem>
+          ))}
         </Select>
+        {filters.jobCategory.length > 0 && (
+          <IconButton
+            size="small"
+            onClick={() => clearFilter('jobCategory')}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
       </FormControl>
 
-      {/* Job Status */}
-      <FormControl fullWidth variant="outlined" margin="normal">
-        <InputLabel>Job Status</InputLabel>
-        <Select
-          name="jobStatus"
-          value={filters.jobStatus}
-          onChange={handleChange}
-          label="Job Status"
-        >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Open">Open</MenuItem>
-          <MenuItem value="Closed">Closed</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Salary Range */}
-      <FormControl fullWidth variant="outlined" margin="normal">
+      <FormControl fullWidth>
         <InputLabel>Salary Range</InputLabel>
         <Select
           name="salaryRange"
           value={filters.salaryRange}
           onChange={handleChange}
-          label="Salary Range"
         >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Below 20k">Below 20k</MenuItem>
-          <MenuItem value="20k - 40k">20k - 40k</MenuItem>
-          <MenuItem value="40k - 60k">40k - 60k</MenuItem>
-          <MenuItem value="60k - 80k">60k - 80k</MenuItem>
-          <MenuItem value="Above 80k">Above 80k</MenuItem>
+          {salaryRanges.map((range) => (
+            <MenuItem key={range} value={range}>
+              {range}
+            </MenuItem>
+          ))}
         </Select>
+        {filters.salaryRange && (
+          <IconButton
+            size="small"
+            onClick={() => clearFilter('salaryRange')}
+          >
+            <ClearIcon />
+          </IconButton>
+        )}
       </FormControl>
 
-      {/* Date Posted */}
-      <FormControl fullWidth variant="outlined" margin="normal">
-        <InputLabel>Date Posted</InputLabel>
-        <Select
-          name="datePosted"
-          value={filters.datePosted}
-          onChange={handleChange}
-          label="Date Posted"
-        >
-          <MenuItem value=""><em>Any</em></MenuItem>
-          <MenuItem value="Last 24 hours">Last 24 hours</MenuItem>
-          <MenuItem value="Last 7 days">Last 7 days</MenuItem>
-          <MenuItem value="Last 30 days">Last 30 days</MenuItem>
-        </Select>
-      </FormControl>
-
-      {/* Apply and Reset Filters */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleFilter}
-        >
-          Apply Filters
-        </Button>
-        <Button
-          variant="outlined"
-          color="secondary"
-          onClick={resetFilters}
-        >
-          Reset Filters
-        </Button>
-      </Box>
+      <Button variant="contained" color="primary" onClick={handleFilter}>
+        Apply Filters
+      </Button>
+      <Button variant="outlined" color="secondary" onClick={handleReset}>
+        Reset Filters
+      </Button>
     </Box>
   );
-}
+};
 
 export default FilterComponent;
