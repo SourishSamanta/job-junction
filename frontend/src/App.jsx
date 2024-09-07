@@ -13,6 +13,7 @@ import Nav from './components/Nav'
 import EditProfile from './privatePages/profile/EditProfile'
 import CreateJobForm from './privatePages/Job/CreateJobForm'
 import HomePage from './privatePages/Home/HomePage'
+import EmployeeDetails from './privatePages/Home/EmployeeDetails'
 
 const App = () => {
   return (
@@ -32,6 +33,10 @@ const App = () => {
 
         <Route exact path="/new-job" element={<ProtectedRoute>
           <CreateJobForm />
+        </ProtectedRoute>} ></Route>
+
+        <Route exact path="/:id" element={<ProtectedRoute>
+          <EmployeeDetails />
         </ProtectedRoute>} ></Route>
 
         <Route exact path="/home" element={<ProtectedRoute>

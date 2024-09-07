@@ -7,6 +7,7 @@ import JobCard from '../Job/JobCard';
 import FilterComponent from './FilterComponent';
 import SearchComponent from './SearchComponent';
 import JobDetails from './JobDetails';
+import EmployeeFilter from './EmployeeFilter';
 
 function HomePage() {
     const { userData } = useUserData();
@@ -14,19 +15,15 @@ function HomePage() {
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [employees, setEmployees] = useState([]);
     const [currentJob, setCurrentJob] = useState();
-    const [filters, setFilters] = useState({
-        jobTitle: '',
-        location: '',
-        employmentType: '',
-        experienceLevel: '',
-        jobCategory: '',
-        companyName: '',
-        jobStatus: '',
-        skills: '',
-        preferredQualifications: '',
-        salaryRange: '',
-        datePosted: '',
-      });
+    // const [filters, setFilters] = useState({
+    //     employmentType: [],
+    //     experienceLevel: '',
+    //     location: '',
+    //     jobCategory: [],
+    //     salaryRange: '',
+    // });
+    const [currentEmployee , setCurrentEmployee] = useState();
+
     const [searchQuery, setsearchQuery] = useState('');
 
 
@@ -60,126 +57,100 @@ function HomePage() {
         }
     }, [userData]);
 
-    
 
-    const handleFilter = () => {
-        console.log(filters)
-        const filtered = jobs.filter(job => {
-            // Check jobTitle
-            if (filters.jobTitle && !job.jobTitle.toLowerCase().includes(filters.jobTitle.toLowerCase())) {
-              return false;
-            }
-            // Check location
-            if (filters.location && !job.location.toLowerCase().includes(filters.location.toLowerCase())) {
-              return false;
-            }
-            // Check employmentType
-            if (filters.employmentType && job.employmentType !== filters.employmentType) {
-              return false;
-            }
-            // Check experienceLevel
-            if (filters.experienceLevel && job.experienceLevel.toLowerCase() !== filters.experienceLevel.toLowerCase()) {
-              return false;
-            }
-            // Check jobCategory
-            if (filters.jobCategory && job.jobCategory !== filters.jobCategory) {
-              return false;
-            }
-            // Check companyName
-            if (filters.companyName && !job.companyName.toLowerCase().includes(filters.companyName.toLowerCase())) {
-              return false;
-            }
-            // Check jobStatus
-            if (filters.jobStatus && job.jobStatus !== filters.jobStatus) {
-              return false;
-            }
-            // Check skills (assuming skills is an array in job and a comma-separated string in filters)
-            if (filters.skills) {
-              const filterSkills = filters.skills.toLowerCase().split(',').map(skill => skill.trim());
-              const jobSkills = job.skills.map(skill => skill.toLowerCase());
-              if (!filterSkills.every(skill => jobSkills.includes(skill))) {
-                return false;
-              }
-            }
-            // Check preferredQualifications
-            if (filters.preferredQualifications && !job.preferredQualifications.toLowerCase().includes(filters.preferredQualifications.toLowerCase())) {
-              return false;
-            }
-            // Check salaryRange (assuming salaryRange is a string like '50000-100000')
-            if (filters.salaryRange) {
-              const [minSalary, maxSalary] = filters.salaryRange.split('-').map(Number);
-              if (job.salary < minSalary || job.salary > maxSalary) {
-                return false;
-              }
-            }
-            // Check datePosted (assuming datePosted is a date string)
-            console.log(new Date(job.postedAt))
-            if (filters.datePosted && new Date(job.postedAt) < new Date(filters.datePosted)) {
-              return false;
-            }
-      
-            return true;
-          });
-          console.log(filtered)
+
+    const handleFilter = (filters) => {
+        const filtered = jobs.filter((job) => {
+            // Apply your filtering logic here based on filters
+            // Example:
+            return (
+                (filters.employmentType.length === 0 || filters.employmentType.includes(job.employmentType[0])) &&
+                (filters.experienceLevel === '' || job.experienceLevel.includes(filters.experienceLevel)) &&
+                (filters.location === '' || job.location.includes(filters.location)) &&
+                (filters.jobCategory.length === 0 || filters.jobCategory.some(category => job.jobCategory.includes(category))) &&
+                (filters.salaryRange === '' || job.salaryRange === filters.salaryRange)
+            );
+        });
+        console.log(filtered)
         setFilteredJobs(filtered);
     };
 
     useEffect(() => {
         console.log(searchQuery)
-        const searchedJobs = jobs.filter(job => 
+        const searchedJobs = jobs.filter(job =>
             job.title.toLowerCase().includes(searchQuery.toLowerCase())
         );
 
-        if(searchedJobs.length !=0)
-        setFilteredJobs(searchedJobs)
-    },[searchQuery])
+        if (searchedJobs.length != 0)
+            setFilteredJobs(searchedJobs)
+    }, [searchQuery])
+
+    useEffect(() => {
+        
+    },[currentEmployee])
 
     return (
         <>
-            <SearchComponent searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
-            <Grid container spacing={2}>
-                <Grid item md={2}>
-                    <FilterComponent filters={filters} setFilters={setFilters} handleFilter={handleFilter} />
-                </Grid>
+            {
+                userData && userData.role === 'recruiter' ? (<>
+                    <EmployeeFilter />
+                    <Grid container>
+                        {employees.map((item, index) => (
+                           <>
+                                    <UserCard setCurrentEmployee={setCurrentEmployee} user={item} />
+                                    
+                           </>
+                                    
+                        ))}
+                    </Grid>
+                </>) : (<>
+                    <SearchComponent searchQuery={searchQuery} setsearchQuery={setsearchQuery} />
+                    <Grid container spacing={2}>
+                        <Grid item md={2}>
+                            <FilterComponent onFilter={handleFilter} />
+                        </Grid>
 
-                <Grid item md={5}>
-                    {userData && (
-                        <>
-                            {userData.role === 'recruiter' ? (
+                        <Grid item md={5}>
+                            {userData && (
                                 <>
-                                    {employees && (
-                                        <Grid container>
-                                            {employees.map((item, index) => (
-                                                <div key={index}>
-                                                    <UserCard user={item} />
-                                                </div>
-                                            ))}
-                                        </Grid>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    {filteredJobs && (
-                                        <Stack spacing={2}>
-                                            {filteredJobs.map((item, index) => (
-                                                <JobCard currentJob={currentJob} setCurrentJob={setCurrentJob} key={index} jobData={item} />
-                                            ))}
-                                        </Stack>
+                                    {userData.role === 'recruiter' ? (
+                                        <>
+                                            {employees && (
+                                                <Grid container>
+                                                    {employees.map((item, index) => (
+                                                        <div key={index}>
+                                                            <UserCard user={item} />
+                                                        </div>
+                                                    ))}
+                                                </Grid>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {filteredJobs && (
+                                                <Stack spacing={2}>
+                                                    {filteredJobs.map((item, index) => (
+                                                        <JobCard currentJob={currentJob} setCurrentJob={setCurrentJob} key={index} jobData={item} />
+                                                    ))}
+                                                </Stack>
+                                            )}
+                                        </>
                                     )}
                                 </>
                             )}
-                        </>
-                    )}
-                </Grid>
+                        </Grid>
 
-                <Grid item md={5}>
-                    {currentJob ? (
-                        <JobDetails jobId={currentJob} />
-                    ) : (
-                        <>Loading...</>
-                    )}
-                </Grid>
-            </Grid>
+                        <Grid item md={5}>
+                            {currentJob ? (
+                                <JobDetails jobId={currentJob} />
+                            ) : (
+                                <>Loading...</>
+                            )}
+                        </Grid>
+                    </Grid>
+                </>)
+            }
+
         </>
     );
 }
